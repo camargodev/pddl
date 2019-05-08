@@ -65,8 +65,8 @@
                     (light-on ?clockwise-neighbor)
                 )
                 (and 
-                    (vampire-is-in ?clockwise-neighbor)
-                    (not (vampire-is-in ?room))
+                    (slayer-is-in ?clockwise-neighbor)
+                    (not (slayer-is-in ?room))
                 )
             )
             (when
@@ -76,8 +76,8 @@
                     (not (light-on ?clockwise-neighbor))
                 )
                 (and 
-                    (vampire-is-in ?anti-clockwise-neighbor)
-                    (not (vampire-is-in ?room))
+                    (slayer-is-in ?anti-clockwise-neighbor)
+                    (not (slayer-is-in ?room))
                 )
             )
             ; should they fight?
