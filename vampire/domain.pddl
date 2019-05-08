@@ -30,6 +30,21 @@
                 (light-on ?room)
                 (not(light-on ?room))
             )
+
+            ; should they fight?
+            (when
+                (or
+                    (and
+                        (vampire-is-in ?anti-clockwise-neighbor)
+                        (slayer-is-in ?anti-clockwise-neighbor)
+                    )
+                    (and
+                        (vampire-is-in ?clockwise-neighbor)
+                        (slayer-is-in ?clockwise-neighbor)
+                    )
+                )
+                (fighting)
+            )
             ; if light in current room is on, then vamp should move:
             ;   to anti-clock if it's dark
             ;   to clock otherwise
@@ -79,20 +94,6 @@
                     (slayer-is-in ?anti-clockwise-neighbor)
                     (not (slayer-is-in ?room))
                 )
-            )
-            ; should they fight?
-            (when
-                (or
-                    (and
-                        (vampire-is-in ?anti-clockwise-neighbor)
-                        (slayer-is-in ?anti-clockwise-neighbor)
-                    )
-                    (and
-                        (vampire-is-in ?clockwise-neighbor)
-                        (slayer-is-in ?clockwise-neighbor)
-                    )
-                )
-                (fighting)
             )
         )
     )
