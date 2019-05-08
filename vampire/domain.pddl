@@ -35,7 +35,7 @@
             ;   to clock otherwise
             (when
                 (and
-                    (light-on ?room)
+                    (not (light-on ?room))
                     (vampire-is-in ?room)
                     (not (light-on ?anti-clockwise-neighbor))
                 )
@@ -46,7 +46,7 @@
             )
             (when
                 (and
-                    (light-on ?room)
+                    (not (light-on ?room))
                     (vampire-is-in ?room)
                     (light-on ?anti-clockwise-neighbor)
                 )
@@ -60,7 +60,7 @@
             ;   to anti-clock otherwise
             (when
                 (and
-                    (not (light-on ?room))
+                    (light-on ?room)
                     (slayer-is-in ?room)
                     (light-on ?clockwise-neighbor)
                 )
@@ -71,7 +71,7 @@
             )
             (when
                 (and
-                    (not (light-on ?room))
+                    (light-on ?room)
                     (slayer-is-in ?room)
                     (not (light-on ?clockwise-neighbor))
                 )
