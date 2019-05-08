@@ -114,6 +114,7 @@
                 )
                 (and
                     (not (slayer-is-alive))
+                    (not (slayer-is-in ?room))
                     (not (fighting))
                 )
             )
@@ -124,6 +125,7 @@
                 )
                 (and
                     (not (vampire-is-alive))
+                    (not (vampire-is-in ?room))
                     (not (fighting))
                 )
             )
