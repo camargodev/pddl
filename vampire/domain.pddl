@@ -21,78 +21,88 @@
             (not (fighting))
         )
         :effect (and
-            ; switched light on/off
             (when 
+                ; when light is off 
                 (not (light-on ?room))
-                (light-on ?room)
-            )
-            (when 
-                (light-on ?room)
-                (not(light-on ?room))
-            )
-
-            ; should they fight?
-            (when
-                (or
-                    (and
-                        (vampire-is-in ?anti-clockwise-neighbor)
-                        (slayer-is-in ?anti-clockwise-neighbor)
-                    )
-                    (and
-                        (vampire-is-in ?clockwise-neighbor)
-                        (slayer-is-in ?clockwise-neighbor)
-                    )
-                )
-                (fighting)
-            )
-            ; if light in current room is on, then vamp should move:
-            ;   to anti-clock if it's dark
-            ;   to clock otherwise
-            (when
                 (and
-                    (not (light-on ?room))
-                    (vampire-is-in ?room)
-                    (not (light-on ?anti-clockwise-neighbor))
-                )
-                (and 
-                    (vampire-is-in ?anti-clockwise-neighbor)
-                    (not (vampire-is-in ?room))
-                )
-            )
-            (when
-                (and
-                    (not (light-on ?room))
-                    (vampire-is-in ?room)
-                    (light-on ?anti-clockwise-neighbor)
-                )
-                (and 
-                    (vampire-is-in ?clockwise-neighbor)
-                    (not (vampire-is-in ?room))
-                )
-            )
-            ; if light in current room is off, then slayer should move:
-            ;   to clock if it's bright
-            ;   to anti-clock otherwise
-            (when
-                (and
+                    ; should turn it on
                     (light-on ?room)
-                    (slayer-is-in ?room)
-                    (light-on ?clockwise-neighbor)
-                )
-                (and 
-                    (slayer-is-in ?clockwise-neighbor)
-                    (not (slayer-is-in ?room))
+                    (when
+                        ; if vamp's in the room
+                        (vampire-is-in ?room)
+                        (and
+                            ; should move out
+                            (not (vampire-is-in ?room))
+                            (and
+                                (when
+                                    ; if anti-clock neigh is dark
+                                    (not (light-on ?anti-clockwise-neighbor))
+                                    (and 
+                                        ; moves to there and fight if slayer's there
+                                        (vampire-is-in ?anti-clockwise-neighbor)
+                                        (when
+                                            (slayer-is-in ?anti-clockwise-neighbor)
+                                            (fighting)
+                                        )
+                                    )
+                                )
+                                (when
+                                    ; if anti-clock neigh is bright
+                                     (light-on ?anti-clockwise-neighbor)
+                                     (and
+                                        ; moves to clock neigh and fight if slayer's there
+                                        (vampire-is-in ?clockwise-neighbor)
+                                        (when
+                                            (slayer-is-in ?clockwise-neighbor)
+                                            (fighting)
+                                        )
+                                     )
+                                )
+                            )
+                        )
+                    )
                 )
             )
             (when
+                ; when light is on 
+                (light-on ?room)
                 (and
-                    (light-on ?room)
-                    (slayer-is-in ?room)
-                    (not (light-on ?clockwise-neighbor))
-                )
-                (and 
-                    (slayer-is-in ?anti-clockwise-neighbor)
-                    (not (slayer-is-in ?room))
+                    ; should turn off
+                    (not(light-on ?room))
+                    (when
+                        ; if slayer is in the room
+                        (slayer-is-in ?room)
+                        (and
+                            ; she should get out of it
+                            (not (slayer-is-in ?room))
+                            (and
+                                (when
+                                    ; if clock-neigh is bright
+                                    (light-on ?clockwise-neighbor)
+                                    (and
+                                        ; moves to there and fight if vamp's there
+                                        (slayer-is-in ?clockwise-neighbor)
+                                        (when
+                                            (vampire-is-in ?clockwise-neighbor)
+                                            (fighting)
+                                        )
+                                    )
+                                )
+                                (when
+                                    ; if clock-neigh is dark
+                                    (not (light-on ?clockwise-neighbor))
+                                    (and
+                                        ; moves to anti-clock and fight if vamp's there
+                                        (slayer-is-in ?anti-clockwise-neighbor)
+                                        (when
+                                            (vampire-is-in ?anti-clockwise-neighbor)
+                                            (fighting)
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
                 )
             )
         )
@@ -109,10 +119,12 @@
         )
         :effect (and
             (when
+                ; room is dark and there's no garlic
                 (and
                     (not (light-on ?room))
                     (not (CONTAINS-GARLIC ?room))
                 )
+                ; fight is over, slayer dies
                 (and
                     (not (slayer-is-alive))
                     (not (slayer-is-in ?room))
@@ -120,10 +132,12 @@
                 )
             )
             (when
+                ; room is bright or there's a garlic
                 (or
                     (light-on ?room)
                     (CONTAINS-GARLIC ?room)
                 )
+                ; fight is over, vamp dies
                 (and
                     (not (vampire-is-alive))
                     (not (vampire-is-in ?room))
