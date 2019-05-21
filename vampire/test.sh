@@ -1,4 +1,4 @@
-path=/home/camargo/Documents/hands-on-1/downward
+path=~/Desktop/pddl/fast-downward
 i=0
 correctResult[0]='6'
 correctResult[1]='4'
@@ -11,7 +11,7 @@ correctResult[7]='10'
 correctResult[8]='13'
 correctResult[9]='8'
 for file in $(ls instances/*.pddl); do
-    result=$(${path}/fast-downward.py domain.pddl $file --heuristic "h=blind()" --search "astar(h)" | grep -oP '(?<=Plan length: ).*(?= step)')
+    result=$(${path}/fast-downward.py --build=release64 domain.pddl $file --heuristic "h=blind()" --search "astar(h)" | grep -oP '(?<=Plan length: ).*(?= step)')
     if [ ${result} -eq ${correctResult[i]} ]; then
         echo "SUCCESS: result is ${result}"
     else
