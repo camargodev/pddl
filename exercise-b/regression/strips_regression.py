@@ -6,6 +6,20 @@ import sys
 from pddl_types import *
 from parser import parse_domain_file, parse_task_file
 
+class Node:
+
+    def __init__(self, state, path):
+        self.state = state
+        self.path = path
+
+    def toTuple(self):
+        return (self.path, self.state)
+
+def is_initial_state(initial_state, current_state):
+    if initial_state.issubset(current_state):
+        return True
+    else:
+        return False
 
 def regress_formula_through_strips_action(atoms, action):
     """
@@ -20,30 +34,24 @@ def regress_formula_through_strips_action(atoms, action):
     # ******************************************************
     # ******************************************************
     
-    possible_parents = []
+    regressions = []
     #first step of regression for STRIPS: choose an operator that deletes no atom
     for o in action:
         if o.delete_effects.isdisjoint(atoms):
             #second step of regression for STRIPS: remove any atoms added by o
             subgoal = set(atoms)
             consider_operator = False #optimization: only consider operators adding at lease one atom 
+            remove_set = set()
             for a in subgoal:
                 if a in o.add_effects:
-                    subgoal.remove(a)
+                    remove_set.add(a)
                     consider_operator = True
+            subgoal = subgoal.difference(remove_set)
             #third step of regression for STRIPS: union of pre(o) with subgoal
             if consider_operator == True:
                 parent = frozenset(subgoal.union(o.preconditions))
-                possible_parents.append((o, parent))
-    return possible_parents
-
-
-
-def is_initial_state(initial_state, current_state):
-    if initial_state.issubset(current_state):
-        return True
-    else:
-        return False
+                regressions.append((o, parent))
+    return regressions
 
 def regression_breadth_first_search(strips_task):
     """
@@ -67,23 +75,32 @@ def regression_breadth_first_search(strips_task):
     expanded = 0
     generated = 1
 
-    print "\n"
-    print strips_task.init
-    print "\n"
-    print strips_task.goal
-    print "\n"
-    for a in strips_task.actions:
-        print a.delete_effects
-    
     if is_initial_state(strips_task.init, strips_task.goal):
         return expanded, generated, []
+    
+    #primeiro estado testado eh o goal
+    closed.add(strips_task.goal)
 
     while len(queue) > 0:
-        state = queue.popleft()
-        
+        pathState = queue.popleft()
+        node = Node(pathState[1], pathState[0])
+        expanded += 1
 
+        for regr in regress_formula_through_strips_action(node.state, strips_task.actions):
+            operator = regr[0]
+            state = regr[1]
+            parentNode = Node(regr[1], [operator.name]+node.path)
 
-    raise NotImplementedError
+            if is_initial_state(strips_task.init, parentNode.state):
+                generated += 1
+                return expanded, generated, parentNode.path
+
+            if parentNode.state not in closed:
+                generated += 1
+                closed.add(parentNode.state)
+                queue.append( parentNode.toTuple() )
+
+    return expanded, generated, None
 
 
 if __name__ == "__main__":
