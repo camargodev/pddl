@@ -78,7 +78,7 @@ def regression_breadth_first_search(strips_task):
     if is_initial_state(strips_task.init, strips_task.goal):
         return expanded, generated, []
     
-    #primeiro estado testado eh o goal
+    #first generated state is the goal state, so we add it to the closed list
     closed.add(strips_task.goal)
 
     while len(queue) > 0:
