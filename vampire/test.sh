@@ -1,4 +1,4 @@
-path=~/Desktop/pddl/fast-downward
+path=../fast-downward
 i=0
 correctResult[0]='6'
 correctResult[1]='4'
