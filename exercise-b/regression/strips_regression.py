@@ -16,7 +16,7 @@ class Node:
         return (self.path, self.state)
 
 def is_initial_state(initial_state, current_state):
-    if initial_state.issubset(current_state):
+    if current_state.issubset(initial_state):
         return True
     else:
         return False
